@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import nl.mranderson.rijks.ui.theme.RijksTheme
 
 const val LOADING_INDICATOR_TEST_TAG = "loadingTag"
 
@@ -17,8 +18,7 @@ fun LoadingView(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
-            .fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -29,5 +29,7 @@ fun LoadingView(
 @Preview
 @Composable
 private fun Preview() {
-    LoadingView()
+    RijksTheme {
+        LoadingView()
+    }
 }

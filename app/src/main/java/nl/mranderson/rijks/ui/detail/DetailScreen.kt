@@ -80,9 +80,10 @@ fun DetailScreen(
             }
 
             is Error -> {
-                ErrorView(message = stringResource(id = R.string.global_error_message)) {
-                    onRetryClicked()
-                }
+                ErrorView(
+                    message = stringResource(id = R.string.global_error_message),
+                    onClickRetry = { onRetryClicked() }
+                )
             }
 
             is Loading -> {
@@ -148,26 +149,25 @@ private fun ArtDetail(
                     }
                 }
             }
-            Column(modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars)) {
+            Column(
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
                 ArtTitle(text = artDetail.title)
-                Chips(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    titles = artDetail.types
+                Chips(titles = artDetail.types)
+                ArtProperty(
+                    label = stringResource(id = R.string.description),
+                    value = artDetail.description ?: stringResource(id = R.string.dash)
                 )
                 ArtProperty(
-                    stringResource(
-                        id = R.string.description
-                    ), artDetail.description ?: stringResource(id = R.string.dash)
+                    label = stringResource(id = R.string.author),
+                    value = artDetail.author
                 )
                 ArtProperty(
-                    stringResource(
-                        id = R.string.author
-                    ), artDetail.author
-                )
-                ArtProperty(
-                    stringResource(
-                        id = R.string.object_name
-                    ), artDetail.objectNumber
+                    label = stringResource(id = R.string.object_name),
+                    value = artDetail.objectNumber
                 )
             }
         }
@@ -175,21 +175,18 @@ private fun ArtDetail(
 }
 
 @Composable
-private fun ArtTitle(
-    text: String
-) {
-    Column(modifier = Modifier.padding(all = 16.dp)) {
-        Text(
-            text = text,
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold
-        )
-    }
+private fun ArtTitle(text: String, modifier: Modifier = Modifier) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.headlineSmall,
+        fontWeight = FontWeight.Bold,
+        modifier = modifier
+    )
 }
 
 @Composable
-private fun ArtProperty(label: String, value: String) {
-    Column(modifier = Modifier.padding(all = 16.dp)) {
+private fun ArtProperty(label: String, value: String, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
         Divider(modifier = Modifier.padding(bottom = 4.dp))
         Text(
             text = label,
