@@ -10,12 +10,12 @@ plugins {
 
 android {
     namespace = "nl.mranderson.rijks"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "nl.mranderson.rijks"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
