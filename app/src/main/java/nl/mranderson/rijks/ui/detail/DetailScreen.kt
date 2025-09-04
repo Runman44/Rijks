@@ -27,10 +27,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import nl.mranderson.rijks.R
@@ -43,6 +46,24 @@ import nl.mranderson.rijks.ui.detail.DetailViewModel.ScreenState.Data
 import nl.mranderson.rijks.ui.detail.DetailViewModel.ScreenState.Error
 import nl.mranderson.rijks.ui.detail.DetailViewModel.ScreenState.Loading
 
+@Composable
+internal fun DetailRoute(
+    onBackClicked: () -> Unit,
+    onImageClicked: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: DetailViewModel = hiltViewModel(),
+) {
+    val detailState by viewModel.state.collectAsStateWithLifecycle()
+
+    DetailScreen(
+        viewData = detailState,
+        onRetryClicked = viewModel::onRetryClicked,
+        onBackClicked = onBackClicked,
+        onImageClicked = onImageClicked,
+        modifier = modifier
+    )
+}
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DetailScreen(
@@ -50,8 +71,9 @@ fun DetailScreen(
     onRetryClicked: () -> Unit,
     onBackClicked: () -> Unit,
     onImageClicked: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Scaffold { _ ->
+    Scaffold(modifier = modifier) { _ ->
         when (viewData) {
             is Data -> {
                 ArtDetail(viewData.artDetail, onBackClicked, onImageClicked)
@@ -72,7 +94,11 @@ fun DetailScreen(
 
 
 @Composable
-fun ArtDetail(artDetail: ArtDetails, onBackClicked: () -> Unit, onImageClicked: (String) -> Unit) {
+private fun ArtDetail(
+    artDetail: ArtDetails,
+    onBackClicked: () -> Unit,
+    onImageClicked: (String) -> Unit
+) {
     val scrollState = rememberScrollState()
 
     BoxWithConstraints {
@@ -162,7 +188,7 @@ private fun ArtTitle(
 }
 
 @Composable
-fun ArtProperty(label: String, value: String) {
+private fun ArtProperty(label: String, value: String) {
     Column(modifier = Modifier.padding(all = 16.dp)) {
         Divider(modifier = Modifier.padding(bottom = 4.dp))
         Text(

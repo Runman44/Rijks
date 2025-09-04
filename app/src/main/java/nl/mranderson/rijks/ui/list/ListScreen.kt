@@ -28,8 +28,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import nl.mranderson.rijks.R
 import nl.mranderson.rijks.ui.components.ArtImage
 import nl.mranderson.rijks.ui.components.ErrorButton
@@ -39,15 +42,31 @@ import nl.mranderson.rijks.ui.list.ListViewModel.ArtUIModel
 import nl.mranderson.rijks.ui.list.ListViewModel.ArtUIModel.ArtData
 import nl.mranderson.rijks.ui.list.ListViewModel.ArtUIModel.AuthorSeparator
 
+@Composable
+internal fun ListRoute(
+    onArtClicked: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: ListViewModel = hiltViewModel(),
+) {
+    val artCollection = viewModel.artCollectionFlow.collectAsLazyPagingItems()
+
+    ListScreen(
+        modifier = modifier,
+        artCollection = artCollection,
+        onArtClicked = onArtClicked
+    )
+}
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ListScreen(
     artCollection: LazyPagingItems<ArtUIModel>,
-    onArtClicked: (String) -> Unit
+    onArtClicked: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Scaffold { innerPadding ->
         LazyColumn(
-            modifier = Modifier
+            modifier = modifier
                 .consumeWindowInsets(innerPadding)
                 .padding(horizontal = 16.dp),
             contentPadding = innerPadding
@@ -58,6 +77,7 @@ fun ListScreen(
                         is AuthorSeparator -> Separator(
                             author = art.author
                         )
+
                         is ArtData -> ArtListItem(
                             art = art,
                             onArtClicked = { id ->
@@ -78,9 +98,11 @@ private fun LazyListScope.renderLoading(lazyArtCollection: LazyPagingItems<ArtUI
             loadState.refresh is LoadState.Loading -> {
                 item { LoadingView(modifier = Modifier.fillParentMaxSize()) }
             }
+
             loadState.append is LoadState.Loading -> {
                 item { LoadingItem() }
             }
+
             else -> return
         }
     }
@@ -97,18 +119,20 @@ private fun LazyListScope.renderError(lazyArtCollection: LazyPagingItems<ArtUIMo
                     ) { retry() }
                 }
             }
+
             loadState.append is LoadState.Error -> {
                 item {
                     ErrorButton { retry() }
                 }
             }
+
             else -> return
         }
     }
 }
 
 @Composable
-fun ArtListItem(
+private fun ArtListItem(
     modifier: Modifier = Modifier,
     art: ArtData,
     onArtClicked: (String) -> Unit
@@ -148,7 +172,7 @@ fun ArtListItem(
 }
 
 @Composable
-fun Separator(modifier: Modifier = Modifier, author: String) {
+private fun Separator(modifier: Modifier = Modifier, author: String) {
     Text(
         text = author,
         textAlign = TextAlign.Center,
@@ -159,7 +183,7 @@ fun Separator(modifier: Modifier = Modifier, author: String) {
 }
 
 @Composable
-fun LoadingItem() {
+private fun LoadingItem() {
     CircularProgressIndicator(
         modifier = Modifier
             .fillMaxWidth()

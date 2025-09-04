@@ -14,7 +14,7 @@ import nl.mranderson.rijks.domain.CollectionRepository
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface DataModule {
+abstract class DataBindsModule {
 
     @Binds
     abstract fun bindCollectionDataSource(
@@ -25,13 +25,15 @@ interface DataModule {
     abstract fun bindCollectionRepository(
         collectionRepositoryImpl: CollectionRepositoryImpl
     ): CollectionRepository
+}
 
-    companion object {
-        @Provides
-        fun provideArtMapper() = ArtDetailsMapper
+@Module
+@InstallIn(SingletonComponent::class)
+class DataProvidesModule {
 
-        @Provides
-        fun provideCollectionMapper() = CollectionMapper
-    }
+    @Provides
+    fun provideArtMapper(): ArtDetailsMapper = ArtDetailsMapper
 
+    @Provides
+    fun provideCollectionMapper(): CollectionMapper = CollectionMapper
 }
