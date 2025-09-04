@@ -29,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -115,14 +114,15 @@ private fun LazyListScope.renderError(lazyArtCollection: LazyPagingItems<ArtUIMo
                 item {
                     ErrorView(
                         message = stringResource(id = R.string.global_error_message),
+                        onClickRetry = { retry() },
                         modifier = Modifier.fillParentMaxSize()
-                    ) { retry() }
+                    )
                 }
             }
 
             loadState.append is LoadState.Error -> {
                 item {
-                    ErrorButton { retry() }
+                    ErrorButton(onClickRetry = { retry() })
                 }
             }
 

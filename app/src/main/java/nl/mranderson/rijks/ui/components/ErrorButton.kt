@@ -10,11 +10,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.mranderson.rijks.R
+import nl.mranderson.rijks.ui.theme.RijksTheme
 
 @Composable
-fun ErrorButton(onClickRetry: () -> Unit) {
+fun ErrorButton(onClickRetry: () -> Unit, modifier: Modifier = Modifier) {
     Button(
-        modifier = Modifier.padding(all = 8.dp),
+        modifier = modifier.padding(all = 8.dp),
         onClick = onClickRetry
     ) {
         Text(
@@ -27,5 +28,7 @@ fun ErrorButton(onClickRetry: () -> Unit) {
 @Preview
 @Composable
 private fun Preview() {
-    ErrorButton(onClickRetry = {})
+    RijksTheme {
+        ErrorButton(onClickRetry = {})
+    }
 }

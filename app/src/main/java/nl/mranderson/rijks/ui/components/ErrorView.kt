@@ -13,12 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import nl.mranderson.rijks.ui.theme.RijksTheme
 
 @Composable
 fun ErrorView(
-    modifier: Modifier = Modifier,
     message: String,
-    onClickRetry: () -> Unit
+    onClickRetry: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
@@ -36,5 +37,7 @@ fun ErrorView(
 @Preview
 @Composable
 private fun Preview() {
-    ErrorView(message = "Oops", onClickRetry = {})
+    RijksTheme {
+        ErrorView(message = "Oops", onClickRetry = {})
+    }
 }

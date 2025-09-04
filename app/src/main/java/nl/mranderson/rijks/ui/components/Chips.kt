@@ -1,6 +1,7 @@
 package nl.mranderson.rijks.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.mranderson.rijks.ui.theme.Purple40
+import nl.mranderson.rijks.ui.theme.RijksTheme
 import nl.mranderson.rijks.ui.theme.White
 
 @Composable
@@ -26,24 +28,22 @@ fun Chips(
     modifier: Modifier = Modifier,
     titles: List<String>
 ) {
-    LazyRow(modifier = modifier) {
+    LazyRow(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         items(titles) {
-            Chip(
-                name = it,
-            )
+            Chip(name = it)
         }
     }
 }
 
 @Composable
-fun Chip(
+private fun Chip(
     name: String,
     backgroundColor: Color = Purple40,
     textColor: Color = White,
+    modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = Modifier
-            .padding(horizontal = 4.dp)
+        modifier = modifier
             .height(32.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(backgroundColor)
@@ -63,5 +63,7 @@ fun Chip(
 @Preview
 @Composable
 private fun Preview() {
-    Chips(titles = listOf("Schilderij", "Model", "Object"))
+    RijksTheme {
+        Chips(titles = listOf("Schilderij", "Model", "Object"))
+    }
 }
