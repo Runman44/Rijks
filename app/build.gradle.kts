@@ -5,7 +5,8 @@ plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.secrets)
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -80,7 +81,7 @@ dependencies {
     implementation(libs.retrofitSerialization)
 
     // Kapt Dependency
-    kapt(libs.hilt.workCompiler)
+    ksp(libs.hilt.workCompiler)
 
     // Chucker Dependency
     debugImplementation(libs.chucker)
@@ -98,9 +99,4 @@ dependencies {
     androidTestImplementation(libs.androidx.test)
     androidTestImplementation(libs.androidx.test.compose.ui)
     androidTestImplementation(libs.androidx.test.espresso)
-}
-
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
 }

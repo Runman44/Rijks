@@ -30,18 +30,32 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import nl.mranderson.rijks.ui.components.ArtImage
 
+@Composable
+internal fun ImageRoute(
+    onBackClicked: () -> Unit,
+    imageUrl: String,
+    modifier: Modifier = Modifier,
+) {
+    ImageScreen(
+        modifier = modifier,
+        onBackClicked = onBackClicked,
+        imageUrl = imageUrl
+    )
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ImageScreen(
+private fun ImageScreen(
     imageUrl: String,
-    onBackClicked: () -> Unit
+    onBackClicked: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var magnifierCenter by remember {
         mutableStateOf(Offset.Unspecified)
     }
 
     Scaffold {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = modifier.fillMaxSize()) {
             Button(
                 onClick = onBackClicked,
                 modifier = Modifier
