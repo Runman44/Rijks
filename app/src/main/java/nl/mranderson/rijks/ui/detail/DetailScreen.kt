@@ -1,11 +1,11 @@
 package nl.mranderson.rijks.ui.detail
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,9 +28,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -40,8 +42,8 @@ import nl.mranderson.rijks.R
 import nl.mranderson.rijks.domain.model.ArtDetails
 import nl.mranderson.rijks.ui.components.ArtImage
 import nl.mranderson.rijks.ui.components.Chips
-import nl.mranderson.rijks.ui.components.ErrorView
-import nl.mranderson.rijks.ui.components.LoadingView
+import nl.mranderson.rijks.ui.components.ErrorButton
+import nl.mranderson.rijks.ui.components.LoadingSpinner
 import nl.mranderson.rijks.ui.detail.DetailViewModel.ScreenState.Data
 import nl.mranderson.rijks.ui.detail.DetailViewModel.ScreenState.Error
 import nl.mranderson.rijks.ui.detail.DetailViewModel.ScreenState.Loading
@@ -64,7 +66,6 @@ internal fun DetailRoute(
     )
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun DetailScreen(
     viewData: DetailViewModel.ScreenState,
@@ -73,21 +74,43 @@ fun DetailScreen(
     onImageClicked: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Scaffold(modifier = modifier) { _ ->
+    Scaffold(modifier = modifier) { innerPadding ->
         when (viewData) {
             is Data -> {
-                ArtDetail(viewData.artDetail, onBackClicked, onImageClicked)
-            }
-
-            is Error -> {
-                ErrorView(
-                    message = stringResource(id = R.string.global_error_message),
-                    onClickRetry = { onRetryClicked() }
+                ArtDetail(
+                    modifier = Modifier.fillMaxSize(),
+                    artDetail = viewData.artDetail,
+                    onBackClicked = onBackClicked,
+                    onImageClicked = onImageClicked
                 )
             }
 
+            is Error -> {
+                Column(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.global_error_message),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ErrorButton(onClickRetry = { onRetryClicked() })
+                }
+            }
+
             is Loading -> {
-                LoadingView()
+                Box(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LoadingSpinner()
+                }
             }
         }
     }
@@ -98,16 +121,13 @@ fun DetailScreen(
 private fun ArtDetail(
     artDetail: ArtDetails,
     onBackClicked: () -> Unit,
-    onImageClicked: (String) -> Unit
+    onImageClicked: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
 
     BoxWithConstraints {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState),
-        ) {
+        Column(modifier = modifier.verticalScroll(scrollState)) {
             Box {
                 ArtImage(
                     modifier = Modifier

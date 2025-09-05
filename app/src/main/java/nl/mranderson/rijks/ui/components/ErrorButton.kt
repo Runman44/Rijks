@@ -15,7 +15,7 @@ import nl.mranderson.rijks.ui.theme.RijksTheme
 @Composable
 fun ErrorButton(onClickRetry: () -> Unit, modifier: Modifier = Modifier) {
     Button(
-        modifier = modifier.padding(all = 8.dp),
+        modifier = modifier,
         onClick = onClickRetry
     ) {
         Text(

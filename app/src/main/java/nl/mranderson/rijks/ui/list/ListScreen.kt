@@ -1,21 +1,23 @@
 package nl.mranderson.rijks.ui.list
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
@@ -35,8 +37,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import nl.mranderson.rijks.R
 import nl.mranderson.rijks.ui.components.ArtImage
 import nl.mranderson.rijks.ui.components.ErrorButton
-import nl.mranderson.rijks.ui.components.ErrorView
-import nl.mranderson.rijks.ui.components.LoadingView
+import nl.mranderson.rijks.ui.components.LoadingSpinner
 import nl.mranderson.rijks.ui.list.ListViewModel.ArtUIModel
 import nl.mranderson.rijks.ui.list.ListViewModel.ArtUIModel.ArtData
 import nl.mranderson.rijks.ui.list.ListViewModel.ArtUIModel.AuthorSeparator
@@ -95,11 +96,24 @@ private fun LazyListScope.renderLoading(lazyArtCollection: LazyPagingItems<ArtUI
     lazyArtCollection.apply {
         when {
             loadState.refresh is LoadState.Loading -> {
-                item { LoadingView(modifier = Modifier.fillParentMaxSize()) }
+                item {
+                    LoadingSpinner(
+                        modifier = Modifier
+                            .fillParentMaxSize()
+                            .wrapContentSize(Alignment.Center)
+                    )
+                }
             }
 
             loadState.append is LoadState.Loading -> {
-                item { LoadingItem() }
+                item {
+                    LoadingSpinner(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                            .wrapContentSize(Alignment.Center)
+                    )
+                }
             }
 
             else -> return
@@ -112,17 +126,29 @@ private fun LazyListScope.renderError(lazyArtCollection: LazyPagingItems<ArtUIMo
         when {
             loadState.refresh is LoadState.Error -> {
                 item {
-                    ErrorView(
-                        message = stringResource(id = R.string.global_error_message),
-                        onClickRetry = { retry() },
-                        modifier = Modifier.fillParentMaxSize()
-                    )
+                    Column(
+                        modifier = Modifier
+                            .fillParentMaxSize()
+                            .padding(all = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.global_error_message),
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        ErrorButton(onClickRetry = { retry() })
+                    }
                 }
             }
 
             loadState.append is LoadState.Error -> {
                 item {
-                    ErrorButton(onClickRetry = { retry() })
+                    ErrorButton(
+                        modifier = Modifier
+                            .padding(all = 8.dp),
+                        onClickRetry = { retry() })
                 }
             }
 
@@ -179,15 +205,5 @@ private fun Separator(modifier: Modifier = Modifier, author: String) {
         modifier = modifier
             .fillMaxWidth()
             .padding(all = 16.dp)
-    )
-}
-
-@Composable
-private fun LoadingItem() {
-    CircularProgressIndicator(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .wrapContentWidth(Alignment.CenterHorizontally)
     )
 }
